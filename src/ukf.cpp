@@ -56,8 +56,6 @@ UKF::UKF() {
    */
 }
 
-UKF::~UKF() {}
-
 void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   /**
    * TODO: Complete this function! Make sure you switch between lidar and radar

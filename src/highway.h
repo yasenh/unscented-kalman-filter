@@ -1,12 +1,13 @@
 /* \author Aaron Brown */
 // Handle logic for creating traffic on highway and animating it
 
+#pragma once
+
 #include "render/render.h"
 #include "sensors/lidar.h"
 #include "tools.h"
 
-class Highway
-{
+class Highway {
 public:
 
 	std::vector<Car> traffic;
@@ -30,8 +31,7 @@ public:
 	int projectedSteps = 0;
 	// --------------------------------
 
-	Highway(pcl::visualization::PCLVisualizer::Ptr& viewer)
-	{
+	Highway(pcl::visualization::PCLVisualizer::Ptr& viewer) {
 
 		tools = Tools();
 	
@@ -50,8 +50,7 @@ public:
 		car1_instructions.push_back(a);
 	
 		car1.setInstructions(car1_instructions);
-		if( trackCars[0] )
-		{
+		if( trackCars[0] ) {
 			UKF ukf1;
 			car1.setUKF(ukf1);
 		}
@@ -64,8 +63,7 @@ public:
 		a = accuation(8.0*1e6, 0.0, 0.0);
 		car2_instructions.push_back(a);
 		car2.setInstructions(car2_instructions);
-		if( trackCars[1] )
-		{
+		if( trackCars[1] ) {
 			UKF ukf2;
 			car2.setUKF(ukf2);
 		}
@@ -88,8 +86,7 @@ public:
 		a = accuation(7.5*1e6, 0.0, 0.0);
 		car3_instructions.push_back(a);
 		car3.setInstructions(car3_instructions);
-		if( trackCars[2] )
-		{
+		if( trackCars[2] ) {
 			UKF ukf3;
 			car3.setUKF(ukf3);
 		}
@@ -105,11 +102,9 @@ public:
 		car3.render(viewer);
 	}
 	
-	void stepHighway(double egoVelocity, long long timestamp, int frame_per_sec, pcl::visualization::PCLVisualizer::Ptr& viewer)
-	{
+	void stepHighway(double egoVelocity, long long timestamp, int frame_per_sec, pcl::visualization::PCLVisualizer::Ptr& viewer) {
 
-		if(visualize_pcd)
-		{
+		if(visualize_pcd) {
 			pcl::PointCloud<pcl::PointXYZ>::Ptr trafficCloud = tools.loadPcd("../src/sensors/data/pcd/highway_"+std::to_string(timestamp)+".pcd");
 			renderPointCloud(viewer, trafficCloud, "trafficCloud", Color((float)184/256,(float)223/256,(float)252/256));
 		}
@@ -119,14 +114,12 @@ public:
 		renderHighway(egoVelocity*timestamp/1e6, viewer);
 		egoCar.render(viewer);
 		
-		for (int i = 0; i < traffic.size(); i++)
-		{
+		for (int i = 0; i < traffic.size(); i++) {
 			traffic[i].move((double)1/frame_per_sec, timestamp);
 			if(!visualize_pcd)
 				traffic[i].render(viewer);
 			// Sense surrounding cars with lidar and radar
-			if(trackCars[i])
-			{
+			if(trackCars[i]) {
 				VectorXd gt(4);
 				gt << traffic[i].position.x, traffic[i].position.y, traffic[i].velocity*cos(traffic[i].angle), traffic[i].velocity*sin(traffic[i].angle);
 				tools.ground_truth.push_back(gt);
@@ -150,32 +143,26 @@ public:
 		viewer->addText("Vx: "	+std::to_string(rmse[2]), 30, 225, 20, 1, 1, 1, "rmse_vx");
 		viewer->addText("Vy: "	+std::to_string(rmse[3]), 30, 200, 20, 1, 1, 1, "rmse_vy");
 
-		if(timestamp > 1.0e6)
-		{
+		if(timestamp > 1.0e6) {
 
-			if(rmse[0] > rmseThreshold[0])
-			{
+			if(rmse[0] > rmseThreshold[0]) {
 				rmseFailLog[0] = rmse[0];
 				pass = false;
 			}
-			if(rmse[1] > rmseThreshold[1])
-			{
+			if(rmse[1] > rmseThreshold[1]) {
 				rmseFailLog[1] = rmse[1];
 				pass = false;
 			}
-			if(rmse[2] > rmseThreshold[2])
-			{
+			if(rmse[2] > rmseThreshold[2]) {
 				rmseFailLog[2] = rmse[2];
 				pass = false;
 			}
-			if(rmse[3] > rmseThreshold[3])
-			{
+			if(rmse[3] > rmseThreshold[3]) {
 				rmseFailLog[3] = rmse[3];
 				pass = false;
 			}
 		}
-		if(!pass)
-		{
+		if(!pass) {
 			viewer->addText("RMSE Failed Threshold", 30, 150, 20, 1, 0, 0, "rmse_fail");
 			if(rmseFailLog[0] > 0)
 				viewer->addText(" X: "+std::to_string(rmseFailLog[0]), 30, 125, 20, 1, 0, 0, "rmse_fail_x");
@@ -186,7 +173,5 @@ public:
 			if(rmseFailLog[3] > 0)
 				viewer->addText("Vy: "+std::to_string(rmseFailLog[3]), 30, 50, 20, 1, 0, 0, "rmse_fail_vy");
 		}
-		
 	}
-	
 };

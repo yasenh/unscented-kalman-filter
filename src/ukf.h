@@ -1,5 +1,4 @@
-#ifndef UKF_H
-#define UKF_H
+#pragma once
 
 #include "Eigen/Dense"
 #include "measurement_package.h"
@@ -14,7 +13,7 @@ class UKF {
   /**
    * Destructor
    */
-  virtual ~UKF();
+  virtual ~UKF() = default;
 
   /**
    * ProcessMeasurement
@@ -96,5 +95,3 @@ class UKF {
   // Sigma point spreading parameter
   double lambda_;
 };
-
-#endif  // UKF_H

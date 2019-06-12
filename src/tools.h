@@ -1,5 +1,5 @@
-#ifndef TOOLS_H_
-#define TOOLS_H_
+#pragma once
+
 #include <vector>
 #include "Eigen/Dense"
 #include "render/render.h"
@@ -9,22 +9,18 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using namespace std;
 
-struct lmarker
-{
+struct lmarker {
 	double x, y;
 	lmarker(double setX, double setY)
 		: x(setX), y(setY)
 	{}
-
 };
 
-struct rmarker
-{
+struct rmarker {
 	double rho, phi, rho_dot;
 	rmarker(double setRho, double setPhi, double setRhoDot)
 		: rho(setRho), phi(setPhi), rho_dot(setRhoDot)
 	{}
-
 };
 
 class Tools {
@@ -32,12 +28,12 @@ class Tools {
 	/**
 	* Constructor.
 	*/
-	Tools();
+	Tools() = default;
 	
 	/**
 	* Destructor.
 	*/
-	virtual ~Tools();
+	virtual ~Tools() = default;
 	
 	// Members
 	std::vector<VectorXd> estimations;
@@ -53,7 +49,4 @@ class Tools {
 	VectorXd CalculateRMSE(const vector<VectorXd> &estimations, const vector<VectorXd> &ground_truth);
 	void savePcd(typename pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, std::string file);
 	pcl::PointCloud<pcl::PointXYZ>::Ptr loadPcd(std::string file);
-	
 };
-
-#endif /* TOOLS_H_ */
