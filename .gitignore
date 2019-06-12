@@ -1,0 +1,5 @@
+bin/
+build/
+.idea/
+cmake-*/
+dat/yolo/yolov3.weights
