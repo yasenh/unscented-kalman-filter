@@ -25,9 +25,9 @@ public:
     /**
      * Prediction Predicts sigma points, the state, and the state covariance
      * matrix
-     * @param delta_t Time between k and k+1 in s
+     * @param dt Time between k and k+1 in s
      */
-    void Prediction(double delta_t);
+    void Prediction(double dt);
 
     /**
      * Updates the state and the state covariance matrix using a laser measurement
@@ -43,7 +43,7 @@ public:
 
 
     void GenerateAugmentedSigmaPoints(Eigen::MatrixXd* Xsig_out);
-    void SigmaPointPrediction(Eigen::MatrixXd Xsig_aug, double delta_t);
+    void SigmaPointPrediction(Eigen::MatrixXd Xsig_aug, double dt);
     void PredictMeanAndCovariance();
     void PredictRadarMeasurement();
     void PredictLaserMeasurement();
@@ -67,9 +67,6 @@ public:
 
     // predicted sigma points matrix
     Eigen::MatrixXd Xsig_pred_;
-
-    // time when the state is true, in us
-    long long time_us_;
 
     // Process noise standard deviation longitudinal acceleration in m/s^2
     double std_a_;
