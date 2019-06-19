@@ -157,13 +157,13 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
     }
 
     //create matrix for sigma points in measurement space
-    Zsig_ = MatrixXd(n_z_, 2 * n_aug_ + 1);
+    Zsig_ = MatrixXd::Zero(n_z_, 2 * n_aug_ + 1);
 
     //mean predicted measurement
-    z_pred_ = VectorXd(n_z_);
+    z_pred_ = VectorXd::Zero(n_z_);
 
     //measurement covariance matrix S
-    S_ = MatrixXd(n_z_, n_z_);
+    S_ = MatrixXd::Zero(n_z_, n_z_);
 
 
     if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
@@ -188,7 +188,7 @@ void UKF::Prediction(double dt) {
      * and the state covariance matrix.
      */
 
-    MatrixXd Xsig_aug = MatrixXd(n_aug_, 2 * n_aug_ + 1);
+    MatrixXd Xsig_aug = MatrixXd::Zero(n_aug_, 2 * n_aug_ + 1);
     GenerateAugmentedSigmaPoints(&Xsig_aug);
     SigmaPointPrediction(Xsig_aug, dt);
     PredictMeanAndCovariance();
@@ -416,7 +416,7 @@ void UKF::PredictLaserMeasurement() {
 
 void UKF::UpdateState(const VectorXd &z) {
     //create matrix for cross correlation Tc
-    MatrixXd Tc = MatrixXd(n_x_, n_z_);
+    MatrixXd Tc = MatrixXd::Zero(n_x_, n_z_);
 
     //calculate cross correlation matrix
     Tc.fill(0.0);
