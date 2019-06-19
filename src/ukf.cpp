@@ -14,10 +14,10 @@ UKF::UKF() {
     use_radar_ = true;
 
     // Process noise standard deviation longitudinal acceleration in m/s^2
-    std_a_ = 3.0;
+    std_a_ = 5.0;
 
     // Process noise standard deviation yaw acceleration in rad/s^2
-    std_yawdd_ = 0.5;
+    std_yawdd_ = 0.8;
 
     /**
      * DO NOT MODIFY measurement noise values below.
@@ -104,8 +104,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
      ****************************************************************************/
     if (!is_initialized_) {
         /**
-         * Initialize the state x_ with the first measurement.
-         * Create the covariance matrix.
+         * Initialize the state with the first measurement.
          */
         if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {
             // Convert radar from polar to cartesian coordinates and initialize state
@@ -131,8 +130,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
      * Update the process noise covariance matrix.
      ****************************************************************************/
 
-    //compute the time elapsed between the current and previous measurements
-    auto dt = static_cast<double>((meas_package.timestamp_ - previous_timestamp_) * 1e-6);	//dt - expressed in seconds
+    //compute the time elapsed between the current and previous measurements, dt - expressed in seconds
+    auto dt = static_cast<double>((meas_package.timestamp_ - previous_timestamp_) * 1e-6);
 
     previous_timestamp_ = meas_package.timestamp_;
 
@@ -141,10 +140,10 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
     //TODO: UpdateLidar function
     while (dt > 0.1) {
         constexpr double delta_t = 0.05;
-        Prediction(delta_t);
+        Predict(delta_t);
         dt -= delta_t;
     }
-    Prediction(dt);
+    Predict(dt);
 
     /*****************************************************************************
      * Update
@@ -186,7 +185,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 
 }
 
-void UKF::Prediction(double dt) {
+void UKF::Predict(double dt) {
     /**
      * TODO: Complete this function! Estimate the object's location.
      * Modify the state vector, x_. Predict sigma points, the state,

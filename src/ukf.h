@@ -27,7 +27,7 @@ public:
      * matrix
      * @param dt Time between k and k+1 in s
      */
-    void Prediction(double dt);
+    void Predict(double dt);
 
     /**
      * Updates the state and the state covariance matrix using a laser measurement
