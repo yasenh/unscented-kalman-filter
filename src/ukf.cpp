@@ -235,7 +235,6 @@ void UKF::GenerateAugmentedSigmaPoints(MatrixXd* Xsig_out) {
     x_aug(6) = 0;
 
     //create augmented covariance matrix
-    P_aug.fill(0.0);
     P_aug.topLeftCorner(5,5) = P_;
     P_aug(5,5) = std_a_ * std_a_;
     P_aug(6,6) = std_yawdd_ * std_yawdd_;
@@ -423,7 +422,6 @@ void UKF::UpdateState(const VectorXd &z) {
     MatrixXd Tc = MatrixXd::Zero(n_x_, n_z_);
 
     //calculate cross correlation matrix
-    Tc.fill(0.0);
     for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 sigma points
 
         //residual
