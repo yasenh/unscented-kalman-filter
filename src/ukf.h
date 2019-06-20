@@ -43,7 +43,7 @@ public:
 
 
     void GenerateAugmentedSigmaPoints(Eigen::MatrixXd& Xsig_out);
-    void SigmaPointPrediction(Eigen::MatrixXd Xsig_aug, double dt);
+    void SigmaPointPrediction(Eigen::MatrixXd& Xsig_aug, double dt);
     void PredictMeanAndCovariance();
     void PredictRadarMeasurement();
     void PredictLaserMeasurement();
