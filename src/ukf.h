@@ -42,7 +42,7 @@ public:
     void UpdateRadar(MeasurementPackage meas_package);
 
 
-    void GenerateAugmentedSigmaPoints(Eigen::MatrixXd* Xsig_out);
+    void GenerateAugmentedSigmaPoints(Eigen::MatrixXd& Xsig_out);
     void SigmaPointPrediction(Eigen::MatrixXd Xsig_aug, double dt);
     void PredictMeanAndCovariance();
     void PredictRadarMeasurement();

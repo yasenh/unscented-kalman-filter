@@ -193,7 +193,7 @@ void UKF::Predict(double dt) {
      */
 
     MatrixXd Xsig_aug = MatrixXd::Zero(n_aug_, 2 * n_aug_ + 1);
-    GenerateAugmentedSigmaPoints(&Xsig_aug);
+    GenerateAugmentedSigmaPoints(Xsig_aug);
     SigmaPointPrediction(Xsig_aug, dt);
     PredictMeanAndCovariance();
 
@@ -219,27 +219,22 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 }
 
 
-void UKF::GenerateAugmentedSigmaPoints(MatrixXd* Xsig_out) {
+void UKF::GenerateAugmentedSigmaPoints(MatrixXd& Xsig_aug) {
     //create augmented mean vector
-    VectorXd x_aug = VectorXd::Zero(7);
+    VectorXd x_aug = VectorXd::Zero(n_aug_);
 
     //create augmented state covariance
-    MatrixXd P_aug = MatrixXd::Zero(7, 7);
-
-    //create sigma point matrix
-    MatrixXd Xsig_aug = MatrixXd::Zero(n_aug_, 2 * n_aug_ + 1);
+    MatrixXd P_aug = MatrixXd::Zero(n_aug_, n_aug_);
 
     //create augmented mean state
-    x_aug.head(5) = x_;
-    x_aug(5) = 0;
-    x_aug(6) = 0;
+    x_aug.head(n_x_) = x_;
 
     //create augmented covariance matrix
-    P_aug.topLeftCorner(5,5) = P_;
-    P_aug(5,5) = std_a_ * std_a_;
-    P_aug(6,6) = std_yawdd_ * std_yawdd_;
+    P_aug.topLeftCorner(n_x_, n_x_) = P_;
+    P_aug(n_x_, n_x_) = std_a_ * std_a_;
+    P_aug(n_x_ + 1, n_x_ + 1) = std_yawdd_ * std_yawdd_;
 
-    //create square root matrix
+    // Cholesky decomposition
     MatrixXd L = P_aug.llt().matrixL();
 
     //create augmented sigma points
@@ -248,9 +243,6 @@ void UKF::GenerateAugmentedSigmaPoints(MatrixXd* Xsig_out) {
         Xsig_aug.col(i+1)        = x_aug + sqrt(lambda_+n_aug_) * L.col(i);
         Xsig_aug.col(i+1+n_aug_) = x_aug - sqrt(lambda_+n_aug_) * L.col(i);
     }
-
-    //write result
-    *Xsig_out = Xsig_aug;
 }
 
 
