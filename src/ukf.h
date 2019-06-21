@@ -29,25 +29,12 @@ public:
      */
     void Predict(double dt);
 
-    /**
-     * Updates the state and the state covariance matrix using a laser measurement
-     * @param meas_package The measurement at k+1
-     */
-    void UpdateLidar(MeasurementPackage meas_package);
-
-    /**
-     * Updates the state and the state covariance matrix using a radar measurement
-     * @param meas_package The measurement at k+1
-     */
-    void UpdateRadar(MeasurementPackage meas_package);
-
-
     void GenerateAugmentedSigmaPoints(Eigen::MatrixXd& Xsig_out);
     void SigmaPointPrediction(Eigen::MatrixXd& Xsig_aug, double dt);
     void PredictMeanAndCovariance();
     void PredictRadarMeasurement();
     void PredictLaserMeasurement();
-    void UpdateState(const Eigen::VectorXd &z);
+    void UpdateState(const Eigen::VectorXd& z);
 
 
     // initially set to false, set to true in first call of ProcessMeasurement

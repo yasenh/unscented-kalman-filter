@@ -199,25 +199,6 @@ void UKF::Predict(double dt) {
 
 }
 
-void UKF::UpdateLidar(MeasurementPackage meas_package) {
-    /**
-     * TODO: Complete this function! Use lidar data to update the belief
-     * about the object's position. Modify the state vector, x_, and
-     * covariance, P_.
-     * You can also calculate the lidar NIS, if desired.
-     */
-}
-
-void UKF::UpdateRadar(MeasurementPackage meas_package) {
-    /**
-     * TODO: Complete this function! Use radar data to update the belief
-     * about the object's position. Modify the state vector, x_, and
-     * covariance, P_.
-     * You can also calculate the radar NIS, if desired.
-     */
-    PredictRadarMeasurement();
-}
-
 
 void UKF::GenerateAugmentedSigmaPoints(MatrixXd& Xsig_aug) {
     //create augmented mean vector
@@ -409,7 +390,7 @@ void UKF::PredictLaserMeasurement() {
 }
 
 
-void UKF::UpdateState(const VectorXd &z) {
+void UKF::UpdateState(const VectorXd& z) {
     //create matrix for cross correlation Tc
     MatrixXd Tc = MatrixXd::Zero(n_x_, n_z_);
 
