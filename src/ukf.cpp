@@ -421,9 +421,13 @@ void UKF::UpdateState(const VectorXd& z) {
     VectorXd z_diff = z - z_pred_;
 
     //angle normalization
-    while (z_diff(1)> M_PI) z_diff(1)-=2.*M_PI;
+    while (z_diff(1) > M_PI) {
+        z_diff(1) -= 2.*M_PI;
+    }
 
-    while (z_diff(1)<-M_PI) z_diff(1)+=2.*M_PI;
+    while (z_diff(1) < -M_PI) {
+        z_diff(1) += 2.*M_PI;
+    }
 
     //update state mean and covariance matrix
     x_ = x_ + K * z_diff;
