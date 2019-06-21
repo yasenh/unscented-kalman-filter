@@ -311,43 +311,46 @@ void UKF::PredictMeanAndCovariance() {
 
 void UKF::PredictRadarMeasurement() {
     //transform sigma points into measurement space
-    for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 simga points
+    for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 sigma points
 
-        // extract values for better readibility
+        // extract values for better readability
         double p_x = Xsig_pred_(0,i);
         double p_y = Xsig_pred_(1,i);
-        double v  = Xsig_pred_(2,i);
+        double v   = Xsig_pred_(2,i);
         double yaw = Xsig_pred_(3,i);
 
         double v1 = cos(yaw)*v;
         double v2 = sin(yaw)*v;
 
         // measurement model
-        Zsig_(0,i) = sqrt(p_x*p_x + p_y*p_y);                        //r
-        Zsig_(1,i) = atan2(p_y,p_x);                                 //phi
+        Zsig_(0,i) = sqrt(p_x*p_x  +  p_y*p_y);                   //r
+        Zsig_(1,i) = atan2(p_y, p_x);                            //phi
 
-        if (Zsig_(0, i) <0.001) {
+        if (Zsig_(0, i) < 0.001) {
             Zsig_(2, i) = (p_x * v1 + p_y * v2) / 0.001;        //r_dot
-        } else {
+        }
+        else {
             Zsig_(2, i) = (p_x * v1 + p_y * v2) / Zsig_(0, i);  //r_dot;
         }
     }
 
-
     z_pred_.fill(0.0);
-    for (int i=0; i < 2*n_aug_+1; i++) {
+    for (int i = 0; i < 2 * n_aug_ + 1; i++) {
         z_pred_ = z_pred_ + weights_(i) * Zsig_.col(i);
     }
 
-
     S_.fill(0.0);
-    for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 simga points
+    for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 sigma points
         //residual
         VectorXd z_diff = Zsig_.col(i) - z_pred_;
 
         //angle normalization
-        while (z_diff(1)> M_PI) z_diff(1)-=2.*M_PI;
-        while (z_diff(1)<-M_PI) z_diff(1)+=2.*M_PI;
+        while (z_diff(1) > M_PI) {
+            z_diff(1) -= 2.*M_PI;
+        }
+        while (z_diff(1) <- M_PI) {
+            z_diff(1) += 2.*M_PI;
+        }
 
         S_ = S_ + weights_(i) * z_diff * z_diff.transpose();
     }
@@ -357,31 +360,30 @@ void UKF::PredictRadarMeasurement() {
 
 void UKF::PredictLaserMeasurement() {
     //transform sigma points into measurement space
-    for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 simga points
-
-        // extract values for better readibility
-        double p_x = Xsig_pred_(0,i);
-        double p_y = Xsig_pred_(1,i);
-
+    for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 sigma points
         // measurement model
-        Zsig_(0,i) = p_x;                        //px
-        Zsig_(1,i) = p_y;                        //py
+        Zsig_(0,i) = Xsig_pred_(0,i);           //px
+        Zsig_(1,i) = Xsig_pred_(1,i);           //py
     }
 
     z_pred_.fill(0.0);
-    for (int i=0; i < 2*n_aug_+1; i++) {
+    for (int i = 0; i < 2 * n_aug_ + 1; i++) {
         z_pred_ = z_pred_ + weights_(i) * Zsig_.col(i);
     }
 
 
     S_.fill(0.0);
-    for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 simga points
+    for (int i = 0; i < 2 * n_aug_ + 1; i++) {  //2n+1 sigma points
         //residual
         VectorXd z_diff = Zsig_.col(i) - z_pred_;
 
         //angle normalization
-        while (z_diff(1)> M_PI) z_diff(1)-=2.*M_PI;
-        while (z_diff(1)<-M_PI) z_diff(1)+=2.*M_PI;
+        while (z_diff(1) > M_PI) {
+            z_diff(1) -= 2.*M_PI;
+        }
+        while (z_diff(1) < -M_PI) {
+            z_diff(1) += 2.*M_PI;
+        }
 
         S_ = S_ + weights_(i) * z_diff * z_diff.transpose();
     }
