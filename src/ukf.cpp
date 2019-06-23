@@ -135,9 +135,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 
     previous_timestamp_ = meas_package.timestamp_;
 
-    //TODO: deal with dt = 0 case
-    //TODO: set every Matrix with zero init
-    //TODO: UpdateLidar function
+    // TODO: deal with dt = 0 case
+    // TODO: plot NIS
     while (dt > 0.1) {
         constexpr double delta_t = 0.05;
         Predict(delta_t);
