@@ -135,8 +135,12 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
 
     previous_timestamp_ = meas_package.timestamp_;
 
-    // TODO: deal with dt = 0 case
     // TODO: plot NIS
+    // TODO: compare the converge rate with/without radar
+
+
+    // Improve the stability by subdividing the prediction step for large delta_t’s into incremental updates
+    // Otherwise Cholesky decomposition may fail
     while (dt > 0.1) {
         constexpr double delta_t = 0.05;
         Predict(delta_t);
@@ -173,11 +177,13 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
         PredictRadarMeasurement();
         // update NIS
         NIS_radar_ = (meas_package.raw_measurements_-z_pred_).transpose()*S_.inverse()*(meas_package.raw_measurements_-z_pred_);
+        std::cout << "NIS Radar = " << NIS_radar_ << std::endl;
     }
     else if (meas_package.sensor_type_ == MeasurementPackage::LASER) {
         PredictLaserMeasurement();
         // update NIS
         NIS_laser_ = (meas_package.raw_measurements_-z_pred_).transpose()*S_.inverse()*(meas_package.raw_measurements_-z_pred_);
+        std::cout << "NIS LiDAR = " << NIS_laser_ << std::endl;
     }
 
     UpdateState(meas_package.raw_measurements_);
